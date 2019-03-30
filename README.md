@@ -1,1 +1,1 @@
-# GRnnet
+# General Regression Neural Network

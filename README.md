@@ -17,3 +17,11 @@ The GRnnet project (https://github.com/statcompute/GRnnet) is my attempt to prov
 1. While the training function **grnn.fit()** is very similar to learn() and smooth() in the grnn package. three functions were designed to provide GRNN projections. The **grnn.predone()** function generates one projected value based on an input vector. Both **grnn.predict()** and **grnn.parpred()** functions generate a vector of projected values based on an input matrix. The only difference is that **grnn.parpred()** runs in parallel and therefore can be 3 times faster than **grnn.predict()** on my 4-core workstation.
 2. While tuning the only hyper-parameter is the key in GRNN training, there are two functions in the GRnnet project to search for the optimal parameter through the n-fold cross validation, including **grnn.cv_r2()** for numeric outcomes and **grnn.cv_auc()** for binary outcomes.
 3. In **grnn.predone()** function, while the default projection is based on the Euclidean distance, there is an option to calculate the GRNN projection based on the Manhattan distance as well for the sake of computational simplicity (Specht, 1991).
+
+#### Why Use GRNN?
+
+In the banking industry, GRNN can be useful in several areas. First of all, it can be employed as the replacement of splines to approximate the term structure of interest rates. Secondly, like other neural networks, it can be used in Fraud Detection and Anti-Money Laundering given its flexibility. At last, in the credit risk modeling, it can also be used to develop performance benchmarks and rapid prototypes for scorecards or Expected Loss models due to the simplicity.
+
+#### Package Dependencies
+R version 3.6, base, stats, caret, parallel, MLmetrics
+

@@ -25,3 +25,18 @@ In the banking industry, GRNN can be useful in several areas. First of all, it c
 #### Package Dependencies
 R version 3.6, base, stats, caret, parallel, MLmetrics
 
+#### <a name="installation"></a>Installation
+
+Download the [grnnet.R](https://github.com/statcompute/GRnnet/blob/master/code/grnnet.R) file and save it in your computer.
+
+If you want to load specific functions (or a function) from the "grnnet.R" file, the import::from() should work. 
+```r
+import::from("grnnet.R", grnn.fit) 
+```
+
+Alternatively, if you just want to load all functions into the current environment, the source() is simple enough to get you started. 
+```r
+source("grnnet.R")
+```
+
+

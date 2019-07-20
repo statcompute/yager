@@ -25,7 +25,7 @@ In the banking industry, GRNN can be useful in several areas. First of all, it c
 #### Package Dependencies
 R version 3.6, base, stats, caret, parallel, MLmetrics
 
-#### <a name="installation"></a>Installation
+#### Installation
 
 Download the [grnnet.R](https://github.com/statcompute/GRnnet/blob/master/code/grnnet.R) file and save it in your computer.
 

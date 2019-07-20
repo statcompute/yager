@@ -1,0 +1,107 @@
+grnn.fit <- function(x, y, w = rep(1, length(y)), sigma = 1) {
+  ### CHECK X MATRIX ###
+  if (is.matrix(x) == F) stop("x needs to be a matrix.", call. = F)
+  if (anyNA(x) == T) stop("NA found in x.", call. = F)
+  ### CHECK Y VECTOR ###
+  if (is.vector(y) == F) stop("y needs to be a vector.", call. = F)
+  if (anyNA(y) == T) stop("NA found in y.", call. = F)
+  if (length(y) != nrow(x)) stop("x and y need to share the same length.", call. = F)
+  ### CHECK W VECTOR ###
+  if (is.vector(w) == F) stop("w needs to be a vector.", call. = F)
+  if (anyNA(w) == T) stop("NA found in w.", call. = F)
+  if (length(w) != nrow(x)) stop("x and w need to share the same length.", call. = F)
+  ### CHECK SIGMA ###
+  if (sigma <= 0) stop("sigma needs to be positive", call. = F)
+
+  gn <- structure(list(), class = "General Regression Neural Net")
+  gn$x <- x
+  gn$y <- y
+  gn$w <- w
+  gn$sigma <- sigma
+  return(gn)
+}
+
+grnn.predone<- function(net, x, type = 1) {
+  ### CHECK INPUT X VECTOR ###
+  if (is.vector(x) == F) stop("x needs to be a vector.", call. = F)
+  if (anyNA(x) == T) stop("NA found in x.", call. = F)
+  if (length(x) != ncol(net$x)) stop("x dimension is not consistent with grnn.", call. = F)
+  ### CHECK INPUT TYPE (CURRENTLY SUPPORTING 1 / 2) ###
+  if (!(type %in% c(1, 2))) stop("the type is not supported.", call. = F)
+
+  if (type == 1) {
+  ### EUCLIDEAN DISTANCE BY DEFAULT ###
+    num <- sum(net$y * exp(-Reduce(c, lapply(split(net$x, seq(nrow(net$x))), function(xi) sum((x - xi) ^ 2))) / (2 * (net$sigma ^ 2))))
+    den <- sum(exp(-Reduce(c, lapply(split(net$x, seq(nrow(net$x))), function(xi) sum((x - xi) ^ 2))) / (2 * (net$sigma ^ 2))))
+  } else if (type == 2) {
+  ### MANHATTAN DISTANCE ###
+    num <- sum(net$y * exp(-Reduce(c, lapply(split(net$x, seq(nrow(net$x))), function(xi) sum(abs(x - xi)))) / net$sigma))
+    den <- sum(exp(-Reduce(c, lapply(split(net$x, seq(nrow(net$x))), function(xi) sum(abs(x - xi)))) / net$sigma ))
+  }
+  return(num / den)
+}
+
+grnn.predict <- function(net, x) {
+  ### CHECK INPUT X MATRIX ###
+  if (is.matrix(x) == F) stop("x needs to be a matrix.", call. = F)
+  if (anyNA(x) == T) stop("NA found in x.", call. = F)
+  if (ncol(x) != ncol(net$x)) stop("x dimension is not consistent with grnn.", call. = F)
+
+  return(Reduce(c, lapply(split(x, seq(nrow(x))), function(x_) grnn.predone(net, x_))))
+}
+
+grnn.parpred <- function(net, x) {
+  ### CHECK INPUT X MATRIX ###
+  if (is.matrix(x) == F) stop("x needs to be a matrix.", call. = F)
+  if (anyNA(x) == T) stop("NA found in x.", call. = F)
+  if (ncol(x) != ncol(net$x)) stop("x dimension is not consistent with grnn.", call. = F)
+
+  cls <- parallel::makeCluster(min(floor(nrow(x) / 3), parallel::detectCores() - 1), type = "PSOCK")
+  obj <- c("net", "x", "grnn.predone", "grnn.predict")
+  parallel::clusterExport(cls, obj, envir = environment())
+  spx <- parallel::parLapplyLB(cls, parallel::clusterSplit(cls, seq(nrow(x))),
+                               function(c_) x[c_, ])
+  rst <- parallel::parLapplyLB(cls, spx, function(x_) grnn.predict(net, x_))
+  parallel::stopCluster(cls)
+  return(Reduce(c, rst))
+}
+
+grnn.cv_r2 <- function(net, sigmas, nfolds, seed = 1) {
+  set.seed(seed)
+  fd <- caret::createFolds(seq(nrow(net$x)), k = nfolds)
+
+  cv <- function(s) {
+    rs <- Reduce(rbind,
+                 lapply(fd,
+                        function(f) data.frame(ya = net$y[unlist(f)],
+                                               yp = grnn.predict(grnn.fit(net$x[unlist(-f), ], net$y[unlist(-f)],  sigma = s),
+                                                                 net$x[unlist(f), ]))))
+    return(data.frame(sigma = s, r2 = MLmetrics::R2_Score(y_pred = rs$yp, y_true = rs$ya)))
+  }
+  cls <- parallel::makeCluster(min(nfolds, parallel::detectCores() - 1), type = "PSOCK")
+  obj <- c("fd", "net", "grnn.fit", "grnn.predone", "grnn.predict")
+  parallel::clusterExport(cls, obj,  envir = environment())
+  rst <- Reduce(rbind, parallel::parLapply(cls, sigmas, cv))
+  parallel::stopCluster(cls)
+  return(list(test = rst, best = rst[rst$r2 == max(rst$r2), ]))
+}
+
+grnn.cv_auc <- function(net, sigmas, nfolds, seed = 1) {
+  set.seed(seed)
+  fd <- caret::createFolds(seq(nrow(net$x)), k = nfolds)
+
+  cv <- function(s) {
+    rs <- Reduce(rbind,
+                 lapply(fd,
+                        function(f) data.frame(ya = net$y[unlist(f)],
+                                               yp = grnn.predict(grnn.fit(net$x[unlist(-f), ], net$y[unlist(-f)],  sigma = s),
+                                                                 net$x[unlist(f), ]))))
+    return(data.frame(sigma = s, auc = MLmetrics::AUC(y_pred = rs$yp, y_true = rs$ya)))
+  }
+  cls <- parallel::makeCluster(min(nfolds, parallel::detectCores() - 1), type = "PSOCK")
+  obj <- c("fd", "net", "grnn.fit", "grnn.predone", "grnn.predict")
+  parallel::clusterExport(cls, obj,  envir = environment())
+  rst <- Reduce(rbind, parallel::parLapply(cls, sigmas, cv))
+  parallel::stopCluster(cls)
+  return(list(test = rst, best = rst[rst$auc == max(rst$auc), ]))
+}

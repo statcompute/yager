@@ -31,12 +31,12 @@ grnn.predone<- function(net, x, type = 1) {
 
   if (type == 1) {
   ### EUCLIDEAN DISTANCE BY DEFAULT ###
-    num <- sum(net$y * exp(-Reduce(c, lapply(split(net$x, seq(nrow(net$x))), function(xi) sum((x - xi) ^ 2))) / (2 * (net$sigma ^ 2))))
-    den <- sum(exp(-Reduce(c, lapply(split(net$x, seq(nrow(net$x))), function(xi) sum((x - xi) ^ 2))) / (2 * (net$sigma ^ 2))))
+    num <- sum(net$w * net$y * exp(-Reduce(c, lapply(split(net$x, seq(nrow(net$x))), function(xi) sum((x - xi) ^ 2))) / (2 * (net$sigma ^ 2))))
+    den <- sum(net$w * exp(-Reduce(c, lapply(split(net$x, seq(nrow(net$x))), function(xi) sum((x - xi) ^ 2))) / (2 * (net$sigma ^ 2))))
   } else if (type == 2) {
   ### MANHATTAN DISTANCE ###
-    num <- sum(net$y * exp(-Reduce(c, lapply(split(net$x, seq(nrow(net$x))), function(xi) sum(abs(x - xi)))) / net$sigma))
-    den <- sum(exp(-Reduce(c, lapply(split(net$x, seq(nrow(net$x))), function(xi) sum(abs(x - xi)))) / net$sigma ))
+    num <- sum(net$w * net$y * exp(-Reduce(c, lapply(split(net$x, seq(nrow(net$x))), function(xi) sum(abs(x - xi)))) / net$sigma))
+    den <- sum(net$w * exp(-Reduce(c, lapply(split(net$x, seq(nrow(net$x))), function(xi) sum(abs(x - xi)))) / net$sigma ))
   }
   return(num / den)
 }

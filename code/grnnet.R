@@ -1,3 +1,10 @@
+###############################################################################
+# PACKAGE NAME: GRnnet (General Regression Neural Network)
+# AUTHOR      : WENSUI LIU
+# DISCLAIMER  : THIS IS MY WEEKEND PROJECT AND NOT RELATED TO MY CURRENT WORK WITH MY EMPLOYER
+#               IT IS FREE (AS FREE BEER) TO USE AND DISTRIBUTE
+###############################################################################
+
 grnn.fit <- function(x, y, w = rep(1, length(y)), sigma = 1) {
   ### CHECK X MATRIX ###
   if (is.matrix(x) == F) stop("x needs to be a matrix.", call. = F)

@@ -51,7 +51,7 @@ While the performance benchmark can take various forms, including but not limite
 
 With both empirical and conceptual advantages, GRNN is able to accommendate each of abovementioned requirements and thus can be considered an approriate candidate that might potentially be employed to develop performance benchmarks for a wide variety of models. 
 
-Below is an example illustrating how to use GRNN to develop a benchmark model for the logistic regression shown in https://github.com/statcompute/MonotonicBinning. 
+Below is an example illustrating how to use GRNN to develop a benchmark model for the logistic regression shown in https://github.com/statcompute/MonotonicBinning#example. 
 
 ```r
 df <- readRDS("df.rds") 

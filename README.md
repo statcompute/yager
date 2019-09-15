@@ -133,7 +133,7 @@ MLmetrics::AUC(y_pred = fitted(mdl2), y_true = df$bad)
 
 ```
 
-The function grnn.margin() was also employed to explore the marginal effect of each attribute in a GRNN. 
+The function [grnn.margin()] (https://github.com/statcompute/GRnnet/blob/master/code/grnn.margin.R) can also be employed to explore the marginal effect of each attribute in a GRNN. 
 
 <p align="center">
   <img width="800" height="400" src="https://github.com/statcompute/GRnnet/blob/master/code/grnn_margin.PNG">

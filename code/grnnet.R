@@ -122,3 +122,17 @@ grnn.margin <- function(net, i) {
   plot(sort(x[, i]), x.pred[order(x[, i])], type = "b", lty = 4, lwd = 3, ylab = '', xlab = xname, 
        main = "Marginal Effect", pch = 16, cex = 1.5, col = "red", cex.main = 1, cex.lab = 1, yaxt = 'n')
 }	                        
+
+                        gen_unifm <- function(min = 0, max = 1, n, seed) {
+  set.seed(seed)
+  return(round(min + (max - min) * runif(n), 8))
+}
+
+gen_sobol <- function(min = 0, max = 1, n, seed) {
+  return(round(min + (max - min) * randtoolbox::sobol(n, dim = 1, scrambling = 3, seed = seed), 8))
+}
+
+gen_latin <- function(min = 0, max = 1, n, seed) {
+  set.seed(seed)
+  return(round(min + (max - min) * c(lhs::randomLHS(n, k = 1)), 8))
+}

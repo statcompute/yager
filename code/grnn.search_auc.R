@@ -1,4 +1,5 @@
-grnn.cv_auc <- function(net, sigmas, nfolds, seed = 1) {
+grnn.search_auc <- function(net, sigmas, nfolds = 4, seed = 1) {
+  if (class(net) != "General Regression Neural Net") stop("net needs to be a GRNN.", call. = F)
   set.seed(seed)
   fd <- caret::createFolds(seq(nrow(net$x)), k = nfolds)
 

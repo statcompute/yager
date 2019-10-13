@@ -1,4 +1,4 @@
-grnn.cv_r2 <- function(net, sigmas, nfolds, seed = 1) {
+grnn.search_rsq <- function(net, sigmas, nfolds, seed = 1) {
   set.seed(seed)
   fd <- caret::createFolds(seq(nrow(net$x)), k = nfolds)
 

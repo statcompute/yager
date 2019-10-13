@@ -1,4 +1,5 @@
-### <p align="center"> General Regression Neural Network </p>
+### <p align="center"> Yet Another General Regression </p>
+### <p align="center">  Neural Networks </p>
 
 #### Introduction
 

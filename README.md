@@ -1,3 +1,7 @@
+<p align="center">
+  <img width="150" height="100" src="https://github.com/statcompute/GRnnet/blob/master/code/08.jpg">
+</p>
+
 ### <p align="center"> Yet Another General Regression (YAGR) </p>
 ### <p align="center">  Neural Networks </p>
 

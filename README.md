@@ -1,4 +1,4 @@
-### <p align="center"> Yet Another General Regression </p>
+### <p align="center"> Yet Another General Regression (YAGR) </p>
 ### <p align="center">  Neural Networks </p>
 
 #### Introduction

@@ -7,7 +7,7 @@
 
 #### Introduction
 
-Compared with other types of neural networks, General Regression Neural Network (Specht, 1991) is advantageous in several aspects.
+Compared with other types of neural networks, [General Regression Neural Network (Specht, 1991)] (https://pdfs.semanticscholar.org/45f4/3abc49a8a60e6b43ddbda5af9fc6c88d663d.pdf) is advantageous in several aspects.
 
 1. Being an universal approximation function, GRNN has only one tuning parameter to control the overall generalization
 2. The network structure of GRNN is surprisingly simple, with only one hidden layer and the number of neurons equal to the number of training samples.

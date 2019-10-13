@@ -103,7 +103,7 @@ Reduce(rbind, Map(function(c) data.frame(var = colnames(X)[c], mean = mean(X[, c
 net1 <- grnn.fit(x = X, y = Y)
 # CROSS-VALIDATION TO CHOOSE THE OPTIONAL SMOOTH PARAMETER
 S <- gen_sobol(min = 0.5, max = 1.5, n = 10, seed = 2019)
-cv <- grnn.cv_auc(net = net1, sigmas = S, nfolds = 5)
+cv <- grnn.search_auc(net = net1, sigmas = S, nfolds = 5)
 # $test
 #       sigma       auc
 #1  1.4066449 0.7543912

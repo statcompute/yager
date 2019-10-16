@@ -73,7 +73,7 @@ grnn.parpred <- function(net, x) {
   return(Reduce(c, rst))
 }
 
-grnn.search_r2 <- function(net, sigmas, nfolds, seed = 1) {
+grnn.search_r2 <- function(net, sigmas, nfolds = 3, seed = 1) {
   set.seed(seed)
   fd <- caret::createFolds(seq(nrow(net$x)), k = nfolds)
 
@@ -93,7 +93,7 @@ grnn.search_r2 <- function(net, sigmas, nfolds, seed = 1) {
   return(list(test = rst, best = rst[rst$r2 == max(rst$r2), ]))
 }
 
-grnn.search_auc <- function(net, sigmas, nfolds, seed = 1) {
+grnn.search_auc <- function(net, sigmas, nfolds = 3, seed = 1) {
   set.seed(seed)
   fd <- caret::createFolds(seq(nrow(net$x)), k = nfolds)
 
@@ -113,6 +113,33 @@ grnn.search_auc <- function(net, sigmas, nfolds, seed = 1) {
   return(list(test = rst, best = rst[rst$auc == max(rst$auc), ]))
 }
 
+grnn.optmiz_auc <- function(net, lower = 0, upper, nfolds = 3, seed = 1, method = 1) {
+  if (class(net) != "General Regression Neural Net") stop("net needs to be a GRNN.", call. = F)
+  set.seed(seed)
+  fd <- caret::createFolds(seq(nrow(net$x)), k = nfolds)
+
+  cv <- function(s) {
+    cls <- parallel::makeCluster(min(nfolds, parallel::detectCores() - 1), type = "PSOCK")
+    obj <- c("fd", "net", "grnn.fit", "grnn.predone", "grnn.predict")
+    parallel::clusterExport(cls, obj,  envir = environment())
+    rs <- Reduce(rbind,
+            parallel::parLapply(cls, fd,
+              function(f) data.frame(ya = net$y[unlist(f)],
+                                     yp = grnn.predict(grnn.fit(net$x[unlist(-f), ], net$y[unlist(-f)],  sigma = s),
+                                                       net$x[unlist(f), ]))))
+    parallel::stopCluster(cls)
+    return(MLmetrics::AUC(y_pred = rs$yp, y_true = rs$ya))
+  }
+
+  if (method == 1) {
+    rst <- optimize(f = cv, interval = c(lower, upper), maximum = T)
+  } else if (method == 2) {
+    rst <- optim(par = mean(lower, upper), fn = cv, lower = lower, upper = upper,
+                 method = "Brent", control = list(fnscale = -1))
+  }
+  return(data.frame(sigma = rst[[1]], auc = rst[[2]]))
+}                       
+                        
 grnn.margin <- function(net, i) {
   n <- length(unique(net$x[, i]))
   x <- matrix(rep(colMeans(net$x), n), nrow = n, byrow = T)
@@ -123,16 +150,16 @@ grnn.margin <- function(net, i) {
        main = "Marginal Effect", pch = 16, cex = 1.5, col = "red", cex.main = 1, cex.lab = 1, yaxt = 'n')
 }	                        
 
-gen_unifm <- function(min = 0, max = 1, n, seed) {
+gen_unifm <- function(min = 0, max = 1, n, seed = 1) {
   set.seed(seed)
   return(round(min + (max - min) * runif(n), 8))
 }
 
-gen_sobol <- function(min = 0, max = 1, n, seed) {
+gen_sobol <- function(min = 0, max = 1, n, seed = 1) {
   return(round(min + (max - min) * randtoolbox::sobol(n, dim = 1, scrambling = 3, seed = seed), 8))
 }
 
-gen_latin <- function(min = 0, max = 1, n, seed) {
+gen_latin <- function(min = 0, max = 1, n, seed = 1) {
   set.seed(seed)
   return(round(min + (max - min) * c(lhs::randomLHS(n, k = 1)), 8))
 }

@@ -32,16 +32,16 @@ R version 3.6, base, stats, caret, parallel, MLmetrics
 
 #### Installation
 
-Download the [grnnet.R](https://github.com/statcompute/yager/blob/master/code/grnnet.R) file and save it in your computer.
+Download the [yager.R](https://github.com/statcompute/yager/blob/master/code/yager.R) file and save it in your computer.
 
 If you want to load specific functions (or a function) from the "grnnet.R" file, the import::from() should work. 
 ```r
-import::from("grnnet.R", grnn.fit) 
+import::from("yager.R", grnn.fit) 
 ```
 
 Alternatively, if you just want to load all functions into the current environment, the source() is simple enough to get you started. 
 ```r
-source("grnnet.R")
+source("yager.R")
 ```
 
 #### Example
@@ -61,7 +61,7 @@ Below is an example illustrating how to use GRNN to develop a benchmark model fo
 ```r
 df <- readRDS("df.rds") 
 source("mob.R")
-source("grnnet.R")
+source("yager.R")
 
 # PRE-PROCESS THE DATA WITH MOB PACKAGE
 bin_out <- batch_bin(df, 3)

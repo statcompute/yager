@@ -73,7 +73,7 @@ grnn.parpred <- function(net, x) {
   return(Reduce(c, rst))
 }
 
-grnn.cv_r2 <- function(net, sigmas, nfolds, seed = 1) {
+grnn.search_r2 <- function(net, sigmas, nfolds, seed = 1) {
   set.seed(seed)
   fd <- caret::createFolds(seq(nrow(net$x)), k = nfolds)
 
@@ -93,7 +93,7 @@ grnn.cv_r2 <- function(net, sigmas, nfolds, seed = 1) {
   return(list(test = rst, best = rst[rst$r2 == max(rst$r2), ]))
 }
 
-grnn.cv_auc <- function(net, sigmas, nfolds, seed = 1) {
+grnn.search_auc <- function(net, sigmas, nfolds, seed = 1) {
   set.seed(seed)
   fd <- caret::createFolds(seq(nrow(net$x)), k = nfolds)
 

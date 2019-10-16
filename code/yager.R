@@ -1,5 +1,5 @@
 ###############################################################################
-# PACKAGE NAME: GRnnet (General Regression Neural Network)
+# PACKAGE NAME: Yet Another General Regression (YAG[e]R) Neural Network
 # AUTHOR      : WENSUI LIU
 # DISCLAIMER  : THIS IS MY WEEKEND PROJECT AND NOT RELATED TO MY CURRENT WORK WITH MY EMPLOYER
 #               IT IS FREE (AS FREE BEER) TO USE AND DISTRIBUTE

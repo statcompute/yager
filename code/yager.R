@@ -73,7 +73,7 @@ grnn.parpred <- function(net, x) {
   return(Reduce(c, rst))
 }
 
-grnn.search_r2 <- function(net, sigmas, nfolds = 3, seed = 1) {
+grnn.search_rsq <- function(net, sigmas, nfolds = 3, seed = 1) {
   set.seed(seed)
   fd <- caret::createFolds(seq(nrow(net$x)), k = nfolds)
 

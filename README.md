@@ -44,6 +44,40 @@ Alternatively, if you just want to load all functions into the current environme
 source("yager.R")
 ```
 
+#### Functions
+
+```txt
+YAGeR 
+  |
+  |-- 1D Random Number Generators
+  |     |-- gen_unifm(min = 0, max = 1, n, seed = 1)
+  |     |-- gen_sobol(min = 0, max = 1, n, seed = 1)   
+  |     `-- gen_latin(min = 0, max = 1, n, seed = 1) 
+  |
+  |-- GRNN Training
+  |     `-- grnn.fit(x, y, w = rep(1, length(y)), sigma = 1) 
+  |
+  |-- GRNN Prediction
+  |     |-- grnn.predone(net, x, type = 1) 
+  |     |-- grnn.predict(net, x)  
+  |     `-- grnn.parpred(net, x)  
+  |
+  |-- Parameter Tuning
+  |     |-- grnn.search_rsq(net, sigmas, nfolds = 4, seed = 1) 
+  |     |-- grnn.search_auc(net, sigmas, nfolds = 4, seed = 1)
+  |     `-- grnn.optmiz_auc(net, lower = 0, upper, nfolds = 4, seed = 1, method = 1)
+  |
+  |-- Variable Importance
+  |     |-- grnn.x_imp(net, i) 
+  |     |-- grnn.imp(net)
+  |     |-- grnn.x_pfi(net, i, ntry = 1e3, seed = 1)
+  |     `-- grnn.pfi(net, ntry = 1e3, seed = 1)
+  |
+  `-- Variable Effect
+        |-- grnn.margin(net, i, plot = T) 
+        `-- grnn.partial(net, i, plot = T) 
+```
+
 #### Example
 It has been mentioned previously that GRNN is an ideal approach employed to develop performance benchmarks for a variety of risk models. People might wonder what the purpose of performance benchmarks is and why we would even need one at all. Sometimes, a model developer had to answer questions about how well the model would perform even before completing the model. Likewise, a model validator also wondered whether the model being validated has a reasonable performance given the data used and the effort spent. As a result, the performance benchmark, which could be built with the same data sample but an alternative methodology, is called for to address aforementioned questions.
 

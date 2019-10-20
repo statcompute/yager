@@ -1,5 +1,6 @@
 grnn.x_pfi <- function(net, i, ntry = 100, seed = 1) {
   if (class(net) != "General Regression Neural Net") stop("net needs to be a GRNN.", call. = F)
+  
   xname <- colnames(net$x)[i]
   set.seed(seed)
   seeds <- round(runif(ntry) * 1e8, 0)  

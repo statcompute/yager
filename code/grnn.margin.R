@@ -9,6 +9,6 @@ grnn.margin <- function(net, i, plot = T) {
     plot(rst[, 1], rst[, 2], type = "b", lty = 4, lwd = 3, ylab = '', xlab = xname, 
          main = "Marginal Effect", pch = 16, cex = 1.5, col = "red", cex.main = 1, cex.lab = 1, yaxt = 'n')
   } else {
-  	return(rst)
+    return(rst)
   }
 }	

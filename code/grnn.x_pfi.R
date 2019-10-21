@@ -1,17 +1,12 @@
-grnn.x_pfi <- function(net, i, ntry = 100, seed = 1) {
+grnn.x_imp <- function(net, i) {
   if (class(net) != "General Regression Neural Net") stop("net needs to be a GRNN.", call. = F)
-  
+  if (i > ncol(net$x)) stop("the selected variable is out of bound.", call. = F)
+
   xname <- colnames(net$x)[i]
-  set.seed(seed)
-  seeds <- round(runif(ntry) * 1e8, 0)  
-  shuffle <- function(s) {
-    set.seed(s)
-    return(sample(seq(nrow(net$x)), nrow(net$x), replace = F))
-  }
-  cl <- Reduce(c, lapply(lapply(seeds, shuffle), function(o) abs(cor(seq(nrow(net$x)), o))))
   x <- net$x
-  x[, i] <-  net$x[shuffle(seeds[which(cl == min(cl))]), i]
+  x[, i] <-  rep(mean(net$x[, i]), length(net$y))
   auc0 <- MLmetrics::AUC(y_pred = grnn.predict(net, net$x), y_true = net$y)
   auc1 <- MLmetrics::AUC(y_pred = grnn.predict(net, x), y_true = net$y)
-  return(data.frame(var = xname, pfi = round(max(0, 1 - auc1 / auc0), 8)))
+  auc2 <- MLmetrics::AUC(y_pred = grnn.predict(grnn.fit(x = x[, -i], y = net$y, sigma = net$sigma), x[, -i]), y_true = net$y)
+  return(data.frame(var = xname, imp1 = round(max(0, 1 - auc1 / auc0), 8), imp2 = round(max(0, 1 - auc2 / auc0), 8)))
 }

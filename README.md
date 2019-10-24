@@ -28,7 +28,7 @@ The YAGeR project (https://github.com/statcompute/yager) is my attempt to provid
 In the banking industry, GRNN can be useful in several areas. First of all, it can be employed as the replacement of splines to approximate the term structure of interest rates. Secondly, like other neural networks, it can be used in Fraud Detection and Anti-Money Laundering given its flexibility. At last, in the credit risk modeling, it can also be used to develop performance benchmarks and rapid prototypes for scorecards or Expected Loss models due to the simplicity.
 
 #### Package Dependencies
-R version 3.6, base, stats, caret, parallel, MLmetrics
+R version 3.6, base, stats, caret, parallel, MLmetrics, randtoolbox, lhs
 
 #### Installation
 

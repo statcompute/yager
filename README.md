@@ -68,10 +68,10 @@ YAGeR
   |     `-- grnn.optmiz_auc(net, lower = 0, upper, nfolds = 4, seed = 1, method = 1)
   |
   |-- Variable Importance
-  |     |-- grnn.x_imp(net, i) 
-  |     |-- grnn.imp(net)
-  |     |-- grnn.x_pfi(net, i, ntry = 1e3, seed = 1)
-  |     `-- grnn.pfi(net, ntry = 1e3, seed = 1)
+  |     |-- grnn.x_imp(net, i, class = F) 
+  |     |-- grnn.imp(net, class = F)
+  |     |-- grnn.x_pfi(net, i, class = F, ntry = 1e3, seed = 1)
+  |     `-- grnn.pfi(net, class = F, ntry = 1e3, seed = 1)
   |
   `-- Variable Effect
         |-- grnn.margin(net, i, plot = T) 

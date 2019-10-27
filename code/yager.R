@@ -228,23 +228,35 @@ grnn.partial <- function(net, i, plot = T) {
 
 ###########################################################################  
 
-grnn.x_imp <- function(net, i) {
+grnn.x_imp <- function(net, i, class = F) {
   if (class(net) != "General Regression Neural Net") stop("net needs to be a GRNN.", call. = F)
   if (i > ncol(net$x)) stop("the selected variable is out of bound.", call. = F)
+  if (!(class %in% c(T, F))) stop("the class input is not correct.", call. = F)
 
   xname <- colnames(net$x)[i]
   x <- net$x
   x[, i] <-  rep(mean(net$x[, i]), length(net$y))
-  auc0 <- MLmetrics::AUC(y_pred = grnn.predict(net, net$x), y_true = net$y)
-  auc1 <- MLmetrics::AUC(y_pred = grnn.predict(net, x), y_true = net$y)
-  auc2 <- MLmetrics::AUC(y_pred = grnn.predict(grnn.fit(x = x[, -i], y = net$y, sigma = net$sigma), x[, -i]), y_true = net$y)
-  return(data.frame(var = xname, imp1 = round(max(0, 1 - auc1 / auc0), 8), imp2 = round(max(0, 1 - auc2 / auc0), 8)))
+  if (class == T) {
+    auc0 <- MLmetrics::AUC(grnn.predict(net, net$x), net$y)
+    auc1 <- MLmetrics::AUC(grnn.predict(net, x), net$y)
+    auc2 <- MLmetrics::AUC(grnn.predict(grnn.fit(x = x[, -i], y = net$y, sigma = net$sigma), x[, -i]), net$y)
+        imp1 <- round(max(0, 1 - auc1 / auc0), 8)
+        imp2 <- round(max(0, 1 - auc2 / auc0), 8)
+  } else {
+    rsq0 <- MLmetrics::R2_Score(grnn.predict(net, net$x), net$y)
+    rsq1 <- MLmetrics::R2_Score(grnn.predict(net, x), net$y)
+    rsq2 <- MLmetrics::R2_Score(grnn.predict(grnn.fit(x = x[, -i], y = net$y, sigma = net$sigma), x[, -i]), net$y)
+        imp1 <- round(max(0, 1 - rsq1 / rsq0), 8)
+        imp2 <- round(max(0, 1 - rsq2 / rsq0), 8)
+  }
+  return(data.frame(var = xname, imp1 = imp1, imp2 = imp2))
 }
 
 ###########################################################################  
 
-grnn.x_pfi <- function(net, i, ntry = 1e3, seed = 1) {
+grnn.x_pfi <- function(net, i, class = F, ntry = 1e3, seed = 1) {
   if (class(net) != "General Regression Neural Net") stop("net needs to be a GRNN.", call. = F)
+  if (!(class %in% c(T, F))) stop("the class input is not correct.", call. = F)
 
   xname <- colnames(net$x)[i]
   set.seed(seed)
@@ -253,21 +265,29 @@ grnn.x_pfi <- function(net, i, ntry = 1e3, seed = 1) {
   cl <- Reduce(c, lapply(ol, function(o) abs(cor(seq(nrow(net$x)), o))))
   x <- net$x
   x[, i] <-  net$x[ol[[which(cl == min(cl))]], i]
-  auc0 <- MLmetrics::AUC(y_pred = grnn.predict(net, net$x), y_true = net$y)
-  auc1 <- MLmetrics::AUC(y_pred = grnn.predict(net, x), y_true = net$y)
-  return(data.frame(var = xname, pfi = round(max(0, 1 - auc1 / auc0), 8)))
+  if (class == T) {
+    auc0 <- MLmetrics::AUC(grnn.predict(net, net$x), net$y)
+    auc1 <- MLmetrics::AUC(grnn.predict(net, x), net$y)
+    pfi  <- round(max(0, 1 - auc1 / auc0), 8)
+  } else {
+    rsq0 <- MLmetrics::R2_Score(grnn.predict(net, net$x), net$y)
+    rsq1 <- MLmetrics::R2_Score(grnn.predict(net, x), net$y)
+    pfi  <- round(max(0, 1 - rsq1 / rsq0), 8)
+  }
+  return(data.frame(var = xname, pfi = pfi))
 }
-                         
+
 ###########################################################################  
 
-grnn.imp <- function(net) {
+grnn.imp <- function(net, class = F) {
   if (class(net) != "General Regression Neural Net") stop("net needs to be a GRNN.", call. = F)
+  if (!(class %in% c(T, F))) stop("the class input is not correct.", call. = F)
 
   cls <- parallel::makeCluster(min(ncol(net$x), parallel::detectCores() - 1), type = "PSOCK")
-  obj <- c("net", "grnn.fit", "grnn.predone", "grnn.predict", "grnn.x_imp")
+  obj <- c("net", "class", "grnn.fit", "grnn.predone", "grnn.predict", "grnn.x_imp")
   parallel::clusterExport(cls, obj,  envir = environment())
-  rst1 <- data.frame(idx = seq(ncol(net$x)), 
-                     Reduce(rbind, parallel::parLapply(cls, seq(ncol(net$x)), function(i) grnn.x_imp(net, i))))
+  rst1 <- data.frame(idx = seq(ncol(net$x)),
+                     Reduce(rbind, parallel::parLapply(cls, seq(ncol(net$x)), function(i) grnn.x_imp(net, i, class = class))))
   parallel::stopCluster(cls)
   rst2 <- rst1[with(rst1, order(-imp1, -imp2)), ]
   row.names(rst2) <- NULL
@@ -276,20 +296,19 @@ grnn.imp <- function(net) {
 
 ###########################################################################  
 
-grnn.pfi <- function(net, ntry = 1e3, seed = 1) {
+grnn.pfi <- function(net, class = F, ntry = 1e3, seed = 1) {
   if (class(net) != "General Regression Neural Net") stop("net needs to be a GRNN.", call. = F)
+  if (!(class %in% c(T, F))) stop("the class input is not correct.", call. = F)
 
   cls <- parallel::makeCluster(min(ncol(net$x), parallel::detectCores() - 1), type = "PSOCK")
-  obj <- c("net", "grnn.fit", "grnn.predone", "grnn.predict", "grnn.x_pfi", "ntry", "seed")
+  obj <- c("net", "class", "grnn.fit", "grnn.predone", "grnn.predict", "grnn.x_pfi", "ntry", "seed")
   parallel::clusterExport(cls, obj,  envir = environment())
-  rst1 <- data.frame(idx = seq(ncol(net$x)), 
-                     Reduce(rbind, parallel::parLapply(cls, seq(ncol(net$x)), 
-                                                       function(i) grnn.x_pfi(net, i, ntry = ntry, seed = seed))))
+  rst1 <- data.frame(idx = seq(ncol(net$x)),
+                     Reduce(rbind, parallel::parLapply(cls, seq(ncol(net$x)),
+                                                       function(i) grnn.x_pfi(net, i, class = class, ntry = ntry, seed = seed))))
   parallel::stopCluster(cls)
   rst2 <- rst1[with(rst1, order(-pfi)), ]
   row.names(rst2) <- NULL
   return(rst2)
 }
-
-
 

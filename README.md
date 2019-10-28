@@ -54,10 +54,10 @@ YAGeR
   |     |-- gen_sobol(min = 0, max = 1, n, seed = 1)   
   |     `-- gen_latin(min = 0, max = 1, n, seed = 1) 
   |
-  |-- GRNN Training
+  |-- Training
   |     `-- grnn.fit(x, y, w = rep(1, length(y)), sigma = 1) 
   |
-  |-- GRNN Prediction
+  |-- Prediction
   |     |-- grnn.predone(net, x, type = 1) 
   |     |-- grnn.predict(net, x)  
   |     `-- grnn.parpred(net, x)  

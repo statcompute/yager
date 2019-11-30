@@ -3,7 +3,7 @@
 </p>
 
 ### <p align="center"> Yet Another General Regression (YAG[e]R) </p>
-### <p align="center">  Neural Networks </p>
+### <p align="center">  Neural Network </p>
 
 #### Introduction
 

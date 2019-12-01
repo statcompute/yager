@@ -1,6 +1,6 @@
 ###########################################################################
 # PACKAGE NAME: YAGeR (YET ANOTHER GENERAL REGRESSION NEURAL NETWORK)     #
-# AUTHOR      : WENSUI LIU                                                #
+# AUTHOR      : WENSUI LIU (liuwensui@gmail.com)                          #
 # DISCLAIMER  : THIS IS MY WEEKEND PROJECT AND NOT RELATED TO MY          #
 #               CURRENT WORK WITH MY EMPLOYER                             #
 #               IT IS FREE (AS FREE BEER) TO USE AND DISTRIBUTE           #

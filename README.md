@@ -32,16 +32,10 @@ R version 3.6, base, stats, parallel, MLmetrics, randtoolbox, lhs
 
 #### Installation
 
-Download the [yager.R](https://github.com/statcompute/yager/blob/master/code/yager.R) file and save it in your computer.
+Download the [yager_0.1.0.tar.gz](https://github.com/statcompute/yager/blob/master/yager_0.1.0.tar.gz) file, save it in your working directory, and then install the package as below.
 
-If you want to load specific functions (or a function) from the "grnnet.R" file, the import::from() should work. 
 ```r
-import::from("yager.R", grnn.fit) 
-```
-
-Alternatively, if you just want to load all functions into the current environment, the source() is simple enough to get you started. 
-```r
-source("yager.R")
+install.packages("yager_0.1.0.tar.gz", repos = NULL, type = "source")
 ```
 
 #### Functions

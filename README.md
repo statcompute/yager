@@ -89,7 +89,7 @@ Below is an example illustrating how to use GRNN to develop a benchmark model fo
 ```r
 df <- readRDS("df.rds") 
 source("mob.R")
-source("yager.R")
+library(yager)
 
 # PRE-PROCESS THE DATA WITH MOB PACKAGE
 bin_out <- batch_bin(df, 3)

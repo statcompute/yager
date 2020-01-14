@@ -38,6 +38,12 @@ Download the [yager_0.1.0.tar.gz](https://github.com/statcompute/yager/blob/mast
 install.packages("yager_0.1.0.tar.gz", repos = NULL, type = "source")
 ```
 
+Alternatively, you can simply install from CRAN.
+
+```r
+install.packages("yager")
+```
+
 #### Functions
 
 ```txt

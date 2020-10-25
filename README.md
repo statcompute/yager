@@ -32,10 +32,10 @@ R version 3.6, base, stats, parallel, MLmetrics, randtoolbox, lhs
 
 #### Installation
 
-Download the [yager_0.1.0.tar.gz](https://github.com/statcompute/yager/blob/master/yager_0.1.0.tar.gz) file, save it in your working directory, and then install the package as below.
+Download the [yager_0.1.1.tar.gz](https://github.com/statcompute/yager/blob/master/yager_0.1.1.tar.gz) file, save it in your working directory, and then install the package as below.
 
 ```r
-install.packages("yager_0.1.0.tar.gz", repos = NULL, type = "source")
+install.packages("yager_0.1.1.tar.gz", repos = NULL, type = "source")
 ```
 
 Alternatively, you can simply install from CRAN.
